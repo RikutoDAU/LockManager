@@ -36,7 +36,7 @@ class attrSetGui(qw.QDialog):
         self.endNameInput.setPlaceholderText("操作したい語尾を入力してください。:例(_FK)")
         self.layout.addWidget(self.endNameInput)
 
-        #アトリビュートの
+        #ロック設定できるアトリビュートのリスト
         self.lockCbList = []
         attrsList = [
             ("tx", "X位置"), ("ty", "Y位置"), ("tz", "Z位置"), 
