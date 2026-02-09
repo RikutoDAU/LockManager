@@ -38,13 +38,13 @@ class attrSetGui(qw.QDialog):
 
         #ロック設定できるアトリビュートのリスト
         self.lockCbList = []
-        attrsList = [
+        self.attrsList = [
             ("tx", "X位置"), ("ty", "Y位置"), ("tz", "Z位置"), 
             ("rx", "X回転"), ("ry", "Y回転"), ("rz", "Z回転"),
             ("sx", "Xスケール"), ("sy", "Yスケール"), ("sz", "Zスケール"),
         ]
         #それぞれのアトリビュートに行う設定の表示
-        for attr, attrName in attrsList:
+        for attr, attrName in self.attrsList:
             cb = qw.QCheckBox(attrName + "のロック")
             cb.setProperty("attr", attr)
             cb.setChecked(False)
@@ -103,9 +103,19 @@ class attrSetGui(qw.QDialog):
         self.updateColorPreview()
 
         #実行ボタンの表示
-        self.doButton = qw.QPushButton("実行")
+        self.doButton = qw.QPushButton("上記項目の実行")
         self.doButton.clicked.connect(self.do)
         self.layout.addWidget(self.doButton)
+
+        #ロック解除ボタンの表示
+        self.doUnLockButton = qw.QPushButton("選択されたオブジェクトのアトリビュートのロックを解除")
+        self.doUnLockButton.clicked.connect(self.doUnLock)
+        self.layout.addWidget(self.doUnLockButton)
+
+        #色のデフォルト化
+        self.doResetColorButton = qw.QPushButton("選択されたオブジェクトのワイヤー色をデフォルト化")
+        self.doResetColorButton.clicked.connect(self.doResetColor)
+        self.layout.addWidget(self.doResetColorButton)
 
     #色設定のテキストとスライダーの数値を同期させる
     def synchroSlider(self, rgbSlider, rgbIndexText):
@@ -140,7 +150,7 @@ class attrSetGui(qw.QDialog):
         #背景色としてrgb値を元に表示
         self.colorPreview.setStyleSheet(f"background-color:rgb({r},{g},{b});")
         
-
+    #アトリビュートのロックの実行
     def do(self):
         
         #指定された語尾取得
@@ -166,12 +176,18 @@ class attrSetGui(qw.QDialog):
         b = self.rgbIndexList[2].value()
         rgbIndexList = [r, g, b]
     
-
-
         #実行
         self.logicClass.doByGui(endName, doLockList, invisible, changeColor, rgbIndexList)
 
-        self.close()
+    #ロック解除
+    def doUnLock(self):
+        self.logicClass.attrUnlockByGui(self.attrsList)
+
+    #ワイヤー色のリセット
+    def doResetColor(self):
+        self.logicClass.resetColor()
+
+
 
 openWindow = attrSetGui()
 
