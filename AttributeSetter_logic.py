@@ -96,3 +96,49 @@ class attrSetter():
 
         finally:
             cmds.undoInfo(closeChunk=True)
+
+    #アトリビュートのロックを解除する
+    def attrUnlockByGui(self, attrList):
+
+        cmds.undoInfo(openChunk=True)
+
+        #選択中のオブジェクトを取得
+        selection = cmds.ls(selection= True, long=True)
+        if not selection:
+            cmds.warning("何も選択されていません。")
+            return
+        
+        for obj in selection:
+
+            for attr in attrList:
+
+                attrName = attr[0]
+                try:
+                    cmds.setAttr(obj + "." + attrName, lock=False)
+
+                    cmds.setAttr(obj + "." + attrName, keyable=True, channelBox=True)
+
+                except Exception as e:
+                    print("アトリビュート見つからない" + {e})
+
+    #色のリセット
+    def resetColor(self):
+
+        cmds.undoInfo(openChunk=True)
+
+        #選択中のオブジェクトを取得
+        selection = cmds.ls(selection= True, long=True)
+        if not selection:
+            cmds.warning("何も選択されていません。")
+            return
+        
+        for obj in selection:
+            shapes = cmds.listRelatives(obj, shapes=True, fullPath=True)
+            
+            if shapes:
+                for s in shapes:
+                    # 描画オーバーライドをオフにする
+                    cmds.setAttr(f"{s}.overrideEnabled", 0)
+                    
+                    #RGBモードをオフにする
+                    cmds.setAttr(f"{s}.overrideRGBColors", 0)
